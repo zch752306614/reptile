@@ -1,0 +1,14 @@
+server:
+  port: 8080
+spring:
+  thymeleaf:
+    # 开发时关闭缓存，不然无法看到实时页面
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    devtools:
+      restart:
+        enabled: true  #设置开启热部署
+      freemarker:
+        cache: false
+debug: true
