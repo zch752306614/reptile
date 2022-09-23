@@ -110,15 +110,15 @@ public class ExcelController {
         return result;
     }
 
-    private static Map<String, String> getData(String html) throws Exception {
+    private static Map<String, String> getData(String html) {
         // 获取的数据，存放在集合中
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>(10);
 
         // 采用Jsoup解析
         Document doc = Jsoup.parse(html);
 
         // 获取标题
-        Elements content = doc.getElementsByClass("bg");
+        Elements content = doc.getElementsByClass("content");
         Elements elements = content.get(0).getElementsByTag("h1");
         String title = elements.text();
         if (title != null) {
@@ -127,7 +127,7 @@ public class ExcelController {
 
         // 获取正文
         content = doc.getElementsByClass("content");
-        elements = content.get(0).getElementsByTag("p");
+        elements = content.get(0).getElementsByClass("showtxt");
         StringBuilder text = new StringBuilder();
         for (Element element : elements) {
             String str = element.text();
@@ -158,9 +158,9 @@ public class ExcelController {
         return data;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         int max = 50;
-        int star = 2923;
+        int star = 451062;
         int count = 0;
 
         //存储路径--获取桌面位置
@@ -176,8 +176,11 @@ public class ExcelController {
         XSSFSheet sheet = wb.createSheet("sheet1");
 
         String baseUrl = "http://www.qiushuge.net/zhongjidouluo/";
-        while (count <= max && star <= 3500) {
-            String url = baseUrl + star + ".html";
+        for (int i = 0; i < 3500; i++) {
+            if (count > max) {
+                break;
+            }
+            String url = baseUrl + (star + i) + ".html";
             try {
                 Map<String, String> data = getNovelInfo(url);
                 System.out.println("                            " + data.get("title"));
@@ -186,13 +189,11 @@ public class ExcelController {
                 row.createCell(0).setCellValue(url);
                 count++;
 
-                Scanner scanner = new Scanner(System.in);
-                String str = scanner.nextLine();
+//                Scanner scanner = new Scanner(System.in);
+//                String str = scanner.nextLine();
 
             } catch (Exception e) {
                 System.out.println("错误链接=" + url);
-            } finally {
-                star++;
             }
         }
 
